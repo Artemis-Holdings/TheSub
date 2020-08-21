@@ -62,7 +62,6 @@ function vlsm() {
 	var q = find_mask(n);
 	var c = find_net_add(m, q);
 	var f = find_wildcard(q);
-
 	var p = find_broadcast(f, m);
 	var o = document.getElementById("nets").innerHTML;
 	var a = sum_hosts(o);
@@ -233,3 +232,8 @@ function find_slash(a) {
 	}
 	return "TOO BIG"
 };
+
+
+
+
+https://zoom.us/j/96355282471?pwd=U3creWJXQUExeEpQekw3S0ZvOE0rZz09
