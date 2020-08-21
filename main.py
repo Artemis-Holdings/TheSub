@@ -19,6 +19,8 @@ def vlsm():
     g = find_hosts(n)
     m = return_ip(h)
     q = find_mask(n)
+    c = find_net_add(m, q)
+
 
 
 def return_slash(a):
@@ -41,8 +43,36 @@ def find_mask(c):
     for b in range(0, 4):
         a[b] = 0
     if c < 8:
-        x = 32 - (c + 24)
-        a[0] = 256 - 2 ** x
+        w = 32 - (c + 24)
+        a[0] = 256 - 2 ** w
     else:
         if c < 16:
-            a[]
+            a[0] = 255
+            x = 32 - (c + 16)
+            a[1] = 256 - (2 ** x)
+        else:
+            if c < 24:
+                y = 32 - (c + 8)
+                a[0] = 255
+                a[1] = 255
+                a[2] = 256 - (2 ** y)
+            else:
+                z = 32 - c
+                a[0] = 255
+                a[1] = 255
+                a[2] = 255
+                a[3] = 256 - (2 ** z)
+    return a
+
+
+def find_net_add(a, b):
+    c = []
+    for d in range(0, 4):
+        c[d] = a[d] & b[d]
+    return c
+
+def find_wildcard(a):
+    c = []
+    for b in range(0, 4):
+        c[b] = 255 - a[b]
+

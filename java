@@ -60,9 +60,9 @@ function vlsm() {
 	var g = find_hosts(n);
 	var m = return_ip(h);
 	var q = find_mask(n);
-
 	var c = find_net_add(m, q);
 	var f = find_wildcard(q);
+
 	var p = find_broadcast(f, m);
 	var o = document.getElementById("nets").innerHTML;
 	var a = sum_hosts(o);
