@@ -6,27 +6,22 @@
 # TEST SEQUENCE
 input_network = str('192.168.1.0')
 input_mask = str('/24')
-input_num_of_subnets = int(1)
-
-
-# def change_subnet_number():
-#     c = input_num_of_subnets
-#     for b in range(int(c)):
-#         net_mem = input("Network " + str(b) + " Common Name: ")
-#         a = input("Number of hosts required:  ")
-#     nets = c
+n_nets = int(1)
 
 
 def vlsm():
-    n_nets = input_num_of_subnets
-    for b in range(int(n_nets)):
+    # GATHERS THE USERS REQUIRED INFORMATION
+    input_labels = {}
+    for b in range(0, n_nets):
         # ### UNCOMMENT TO BRING IN USER INTERACTION
-        # net_mem = input("Network " + str(b) + " Common Name: ")
-        # a = input("Number of hosts required:  ")
-
+        # name_sub_net = input("Network " + str(b) + " Common Name: ")
+        # n_hosts = input("Number of hosts required:  ")
         ### TEST ONLY
         name_sub_net = 'TestNet'
         n_hosts = 52
+        new_entry = {name_sub_net: n_hosts}
+        input_labels.update(new_entry)
+        labels_sorted = sorted(input_labels.items(), key=lambda x: x[1], reverse=True)
 
     net_ip_array = return_ip_net_array(input_network)
     net_mask_array = return_mask_normalized(input_mask)
@@ -34,16 +29,35 @@ def vlsm():
     net_add = find_net_add(net_ip_array, net_mask_array)
     net_wildcard = find_wildcard(net_mask_array)
     net_broadcast = find_broadcast(net_wildcard, net_ip_array)
-    # a = sum_hosts(n_nets)
 
-    test = str(a)
-    print(type(test), 'OUTPUT: ' + test)
+    print(
+        'NETWORK ADDRESS: {0}.{1}.{2}.{3}'.format(net_add[0], net_add[1], net_add[2], net_add[3]))
+    print(
+        'NETWORK MASK: {0}.{1}.{2}.{3}'.format(net_mask_array[0], net_mask_array[1], net_mask_array[2],
+                                               net_mask_array[3]))
+    for r in range(0, n_nets):
+        j = find_slash(labels_sorted[r])
+
+    print(labels_sorted[0][1])
+    # test = str(input_labels)
+    # print(type(test), 'OUTPUT: ' + test)
 
 
-    #
-    #
-    # d = ordered_hosts(n_nets)
-    # print('the network %d . %d . d% . %d / %d' % (c[0], c[1], c[2], c[3], n))
+# def input_user_subnet(n_nets):
+#     # GATHERS THE USERS REQUIRED INFORMATION
+#     input_labels = {}
+#     for b in range(0, n_nets):
+#         # ### UNCOMMENT TO BRING IN USER INTERACTION
+#         name_sub_net = input("Network " + str(b) + " Common Name: ")
+#         n_hosts = input("Number of hosts required:  ")
+#         ### TEST ONLY
+#         # name_sub_net = 'TestNet'
+#         # n_hosts = 52
+#         new_entry = {name_sub_net: n_hosts}
+#         input_labels.update(new_entry)
+#         labels_sorted = sorted(input_labels.items(), key=lambda x: x[1], reverse=True)
+#         return labels_sorted
+
 
 
 def return_ip_net_array(input_network):
@@ -102,7 +116,6 @@ def find_mask(c):
                 array_mask[2] = 255
                 array_mask[3] = 256 - (2 ** z)
     return array_mask
-
 
 
 def find_net_add(net, mask):
