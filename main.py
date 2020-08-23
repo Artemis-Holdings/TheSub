@@ -1,63 +1,105 @@
-# input_network = input("What is the network IP:")
-# input_mask = input("What is the mask (255.255.255.192) or CIDR (/24):")
-# need to create data validation
-# input_num_of_subnets = input("Number of subnets required:  ")
+# Gather user information to start calculations
+def input_user():
+    #### INITIALIZE DATABASES !!!!
+    input_labels_db = {}
+    input_user_db = []
 
-# TEST SEQUENCE
-input_network = str('192.168.1.0')
-input_mask = str('/24')
-n_nets = int(1)
+    ###### START OF INPUTS !!!!
+    # TODO: Create Data Validation
 
+    # TODO: Change this block for user interaction.
+    # input_network = input('What is the network IP:')
+    # input_mask = input('What is the mask (255.255.255.192) or CIDR (/24):')
+    # input_num_of_subnets = input('Number of subnets required:  ')
 
-def vlsm():
-    # GATHERS THE USERS REQUIRED INFORMATION
-    input_labels = {}
+    ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
+    input_network = str('192.168.1.0')
+    input_mask = str('/17')
+    n_nets = int(1)
+
+    ### PRE-PROCESSING !!!
+    net_mask_array = return_mask_normalized(input_mask)
+    net_cidr = return_cidr_normalized(input_mask)
+
+    #### ADDS THE USER INPUT INTO A DICTIONARY !!!
+    input_user_db.append(n_nets)
+    input_user_db.append([int(i) for i in input_network.split('.')])
+    input_user_db.append(net_mask_array)
+    input_user_db.append(net_cidr)
+
     for b in range(0, n_nets):
-        # ### UNCOMMENT TO BRING IN USER INTERACTION
-        # name_sub_net = input("Network " + str(b) + " Common Name: ")
-        # n_hosts = input("Number of hosts required:  ")
-        ### TEST ONLY
+        # ### TODO: UNCOMMENT TO BRING IN USER INTERACTION
+        # name_sub_net = input('Network ' + str(b) + ' Common Name: ')
+        # n_hosts = input('Number of hosts required:  ')
+        ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
         name_sub_net = 'TestNet'
         n_hosts = 52
+
         new_entry = {name_sub_net: n_hosts}
-        input_labels.update(new_entry)
-        labels_sorted = sorted(input_labels.items(), key=lambda x: x[1], reverse=True)
+        input_labels_db.update(new_entry)
+    input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=False)
 
-    net_ip_array = return_ip_net_array(input_network)
-    net_mask_array = return_mask_normalized(input_mask)
-    hosts_available = find_hosts(input_mask)
-    net_add = find_net_add(net_ip_array, net_mask_array)
-    net_wildcard = find_wildcard(net_mask_array)
-    net_broadcast = find_broadcast(net_wildcard, net_ip_array)
-
-    print(
-        'NETWORK ADDRESS: {0}.{1}.{2}.{3}'.format(net_add[0], net_add[1], net_add[2], net_add[3]))
-    print(
-        'NETWORK MASK: {0}.{1}.{2}.{3}'.format(net_mask_array[0], net_mask_array[1], net_mask_array[2],
-                                               net_mask_array[3]))
-    for r in range(0, n_nets):
-        j = find_slash(labels_sorted[r])
-
-    print(labels_sorted[0][1])
-    # test = str(input_labels)
-    # print(type(test), 'OUTPUT: ' + test)
+    return input_user_db, input_labels_db
 
 
-# def input_user_subnet(n_nets):
-#     # GATHERS THE USERS REQUIRED INFORMATION
-#     input_labels = {}
-#     for b in range(0, n_nets):
-#         # ### UNCOMMENT TO BRING IN USER INTERACTION
-#         name_sub_net = input("Network " + str(b) + " Common Name: ")
-#         n_hosts = input("Number of hosts required:  ")
-#         ### TEST ONLY
-#         # name_sub_net = 'TestNet'
-#         # n_hosts = 52
-#         new_entry = {name_sub_net: n_hosts}
-#         input_labels.update(new_entry)
-#         labels_sorted = sorted(input_labels.items(), key=lambda x: x[1], reverse=True)
-#         return labels_sorted
+# Input User Database:  Number Of networks required, IP address in array, Mask in array, CIDR
+# Input Labels Database:  Common Name, Hosts Required
 
+def vlan(input_user_db, input_labels_db):
+    print(input_labels_db)
+    print(input_user_db)
+    og = dict(net_common_name='name', hosts_req=0, hosts_avail=0, hosts_unused=0, net_add=[0, 0, 0, 0], cidr=0,
+              sub_mask=[0, 0, 0, 0], sub_start=[0, 0, 0, 0], sub_end=[0, 0, 0, 0], sub_broad=[0, 0, 0, 0],
+              sub_wild=[0, 0, 0, 0], sub_delta_r=0)
+    n_nets = range(0, input_user_db[0])
+    db = {}
+    for i in n_nets:
+        db[i] = og.copy()
+        db[i]['net_common_name'] = str(input_labels_db[i][0])
+        db[i]['hosts_req'] = int(input_labels_db[i][1])
+        if i == 0:
+            db[i]['net_add'] = input_user_db[1]
+            db[i]['cidr'] = find_slash(db[i]['hosts_req'])
+            db[i]['hosts_avail'] = find_hosts(db[i]['cidr'])
+            db[i]['hosts_unused'] = db[i]['hosts_avail'] - db[i]['hosts_req']
+            db[i]['sub_mask'] = find_mask(db[i]['cidr'])
+            db[i]['sub_delta_r'] = db[i]['hosts_avail'] + 2
+            db[i]['sub_start'] = find_start(db[i], db[i]['net_add'])
+            db[i]['sub_wild'] = find_wildcard(db[i]['sub_mask'])
+            db[i]['sub_broad'] = find_broadcast(db[i]['sub_wild'], db[i]['net_add'])
+            db[i]['sub_end'] = find_end(db[i], db[i]['sub_broad'])
+        else:
+
+            break
+            # broadcast plus one
+
+    print(db)
+
+
+def find_start(db, net_add):
+
+    db['sub_start'][3] = net_add[3] + 1
+    for b in range(0, 2):
+        db['sub_start'][b] = net_add[b]
+    start = db['sub_start']
+    return start
+
+
+def find_end(db, net_broad):
+    db['sub_end'][3] = net_broad[3] - 1
+    for b in range(0, 2):
+        db['sub_end'][b] = net_broad[b]
+    end = db['sub_end']
+    return end
+
+
+def find_slash(sn_hosts):
+    for i in range(0, sn_hosts):
+        x = 2 ** i
+        if x > sn_hosts - 2:
+            return 32 - i
+        else:
+            continue
 
 
 def return_ip_net_array(input_network):
@@ -76,15 +118,31 @@ def return_mask_normalized(input_mask):
         return mask_found
 
 
-def find_hosts(input_mask):
-    cidr = input_mask.replace('/', '')
-    x = 32 - int(cidr)
+def return_cidr_normalized(input_cidr):
+    if '/' in input_cidr:
+        cidr_given = int(input_cidr.replace('/', ''))
+        return cidr_given
+    else:
+        mask_array = [int(i) for i in input_cidr.split('.')]
+        return dec_to_bin(mask_array)
+
+
+def dec_to_bin(mask_array):
+    mask_bin = []
+    for i in range(0, 4):
+        z = str(bin(mask_array[i]).replace("0b", ""))
+        x = z.count('1')
+        mask_bin.insert(i, x)
+    return sum(mask_bin)
+
+
+def find_hosts(found_cidr):
+    x = 32 - int(found_cidr)
     return (2 ** x) - 2
 
 
 def find_mask(c):
     array_mask = []
-    b = c.split(".")
     for i in range(0, 4):
         array_mask.append(i)
     c = int(c)
@@ -125,33 +183,19 @@ def find_net_add(net, mask):
     return c
 
 
-def find_wildcard(a):
+def find_wildcard(sub_mask):
     c = [1, 1, 1, 1]
     for b in range(0, 4):
-        c[b] = 255 - a[b]
+        c[b] = 255 - sub_mask[b]
     return c
 
 
-def find_broadcast(wildcard, ip):
+def find_broadcast(wildcard, net_add):
     d = [1, 1, 1, 1]
     for i in range(0, 4):
-        d[i] = wildcard[i] or int(ip[i])
+        d[i] = wildcard[i] or int(net_add[i])
     return d
 
 
-# def sum_hosts(input_num_of_subnets):
-#     d = 0
-#     for c in range(1, input_num_of_subnets):
-#         b = "hosts " + str(c)
-#     return b
-#
-#
-# # def ordered_hosts(a):
-# #     c = []
-# #     b = 0
-# #     for f in range(1, a):
-# #         e = "name " + str(f)
-# #         d = "hosts " + str(f)
-
-
-vlsm()
+userdb, labelsdb = input_user()
+vlan(userdb, labelsdb)

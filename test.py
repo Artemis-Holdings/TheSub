@@ -1,19 +1,25 @@
-net = [192, 168, 1, 100]
-mask = [255, 255, 255, 252]
+net = [192, 168, 1, 0]
+mask = [255, 255, 255, 0]
 
-# c = [1, 1, 1, 1]
-# x = net[0]
-# y = mask[0]
-#
-# c[2] = x & y
 
-def find_net_add(net, mask):
+def find_start(net, mask):
+    net_bin = []
+    mas_bin = []
+    for i in range(0, 4):
+        z = int(bin(net[i]), 2)  # .replace('0b', ''))
+        x = int(bin(net[i]), 2)  # .replace('0b', ''))
+        net_bin.insert(i, z)
+        mas_bin.insert(i, z)
+
     c = [1, 1, 1, 1]
     for i in range(0, 4):
-        c[i] = net[i] & mask[i]
-    return c
+        c[i] = bin(net_bin[i] & mas_bin[i]) + 1
 
-a = find_net_add(net, mask)
+    print(c)
 
-test = str(a)
-print(type(test), 'OUTPUT: ' + test)
+
+# find_start(net, mask)
+
+
+x = 192 & 24
+print(x)
