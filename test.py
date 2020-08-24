@@ -1,25 +1,12 @@
-net = [192, 168, 1, 0]
-mask = [255, 255, 255, 0]
+## Python program to print the data
+d = {1: ["Python", 33.2, 'UP'],
+2: ["Java", 23.54, 'DOWN'],
+3: ["Ruby", 17.22, 'UP'],
+10: ["Lua", 10.55, 'DOWN'],
+5: ["Groovy", 9.22, 'DOWN'],
+6: ["C", 1.55, 'UP'] }
+print ("{:<8} {:<15} {:<10} {:<10}".format('Pos','Lang','Percent','Change'))
+for k, v in d.items():
 
-
-def find_start(net, mask):
-    net_bin = []
-    mas_bin = []
-    for i in range(0, 4):
-        z = int(bin(net[i]), 2)  # .replace('0b', ''))
-        x = int(bin(net[i]), 2)  # .replace('0b', ''))
-        net_bin.insert(i, z)
-        mas_bin.insert(i, z)
-
-    c = [1, 1, 1, 1]
-    for i in range(0, 4):
-        c[i] = bin(net_bin[i] & mas_bin[i]) + 1
-
-    print(c)
-
-
-# find_start(net, mask)
-
-
-x = 192 & 24
-print(x)
+lang, perc, change = v
+print ("{:<8} {:<15} {:<10} {:<10}".format(k, lang, perc, change))

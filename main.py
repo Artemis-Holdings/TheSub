@@ -13,9 +13,9 @@ def input_user():
     # input_num_of_subnets = input('Number of subnets required:  ')
 
     ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
-    input_network = str('192.168.1.0')
-    input_mask = str('/17')
-    n_nets = int(1)
+    input_network = str('192.168.0.0')
+    input_mask = str('/24')
+    n_nets = int(4)
 
     ### PRE-PROCESSING !!!
     net_mask_array = return_mask_normalized(input_mask)
@@ -31,23 +31,16 @@ def input_user():
         # ### TODO: UNCOMMENT TO BRING IN USER INTERACTION
         # name_sub_net = input('Network ' + str(b) + ' Common Name: ')
         # n_hosts = input('Number of hosts required:  ')
-        ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
-        name_sub_net = 'TestNet'
-        n_hosts = 52
-
-        new_entry = {name_sub_net: n_hosts}
-        input_labels_db.update(new_entry)
-    input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=False)
+        # new_entry = {name_sub_net: n_hosts}
+        # input_labels_db.update(new_entry)
+        # input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=True)
+        ## TODO:  REMOVE BEFOR FLIGHT. TEST SEQUENCE ONLY!!!
+        input_labels_db = [('staff', 100), ('sales', 50), ('it', 32), ('guest', 32)]
 
     return input_user_db, input_labels_db
 
 
-# Input User Database:  Number Of networks required, IP address in array, Mask in array, CIDR
-# Input Labels Database:  Common Name, Hosts Required
-
-def vlan(input_user_db, input_labels_db):
-    print(input_labels_db)
-    print(input_user_db)
+def vlsm(input_user_db, input_labels_db):
     og = dict(net_common_name='name', hosts_req=0, hosts_avail=0, hosts_unused=0, net_add=[0, 0, 0, 0], cidr=0,
               sub_mask=[0, 0, 0, 0], sub_start=[0, 0, 0, 0], sub_end=[0, 0, 0, 0], sub_broad=[0, 0, 0, 0],
               sub_wild=[0, 0, 0, 0], sub_delta_r=0)
@@ -55,33 +48,40 @@ def vlan(input_user_db, input_labels_db):
     db = {}
     for i in n_nets:
         db[i] = og.copy()
-        db[i]['net_common_name'] = str(input_labels_db[i][0])
-        db[i]['hosts_req'] = int(input_labels_db[i][1])
+        db[i]['net_common_name'] = input_labels_db[i][0]
+        db[i]['hosts_req'] = input_labels_db[i][1]
+
         if i == 0:
-            db[i]['net_add'] = input_user_db[1]
-            db[i]['cidr'] = find_slash(db[i]['hosts_req'])
-            db[i]['hosts_avail'] = find_hosts(db[i]['cidr'])
-            db[i]['hosts_unused'] = db[i]['hosts_avail'] - db[i]['hosts_req']
-            db[i]['sub_mask'] = find_mask(db[i]['cidr'])
-            db[i]['sub_delta_r'] = db[i]['hosts_avail'] + 2
-            db[i]['sub_start'] = find_start(db[i], db[i]['net_add'])
-            db[i]['sub_wild'] = find_wildcard(db[i]['sub_mask'])
-            db[i]['sub_broad'] = find_broadcast(db[i]['sub_wild'], db[i]['net_add'])
-            db[i]['sub_end'] = find_end(db[i], db[i]['sub_broad'])
+            db[0]['net_add'] = input_user_db[1].copy()
+            db[0]['cidr'] = int(find_slash(db[0].get('hosts_req')))
+            db[0]['hosts_avail'] = int(find_hosts(db[0].get('cidr')))
+            db[0]['hosts_unused'] = db[i].get('hosts_avail') - db[0].get('hosts_req')
+            db[0]['sub_mask'] = find_mask(db[0].get('cidr'))
+            db[0]['sub_delta_r'] = db[0].get('hosts_avail') + 2
+            db[0]['sub_start'] = find_start(db[0], db[0].get('net_add'))
+            db[0]['sub_wild'] = find_wildcard(db[0].get('sub_mask'))
+            db[0]['sub_broad'] = find_broadcast(db[0].get('sub_wild'), db[0].get('net_add'))
+            db[0]['sub_end'] = find_end(db[0], db[0].get('sub_broad'))
+
         else:
-
-            break
-            # broadcast plus one
-
-    print(db)
+            db[i]['net_add'] = find_start(db[i], db[i - 1].get('sub_broad'))
+            db[i]['cidr'] = int(find_slash(db[i].get('hosts_req')))
+            db[i]['hosts_avail'] = int(find_hosts(db[i].get('cidr')))
+            db[i]['hosts_unused'] = db[i].get('hosts_avail') - db[i].get('hosts_req')
+            db[i]['sub_mask'] = find_mask(db[i].get('cidr'))
+            db[i]['sub_delta_r'] = db[i].get('hosts_avail') + 2
+            db[i]['sub_start'] = find_start(db[i], db[i].get('net_add'))
+            db[i]['sub_wild'] = find_wildcard(db[i].get('sub_mask'))
+            db[i]['sub_broad'] = find_broadcast(db[i].get('sub_wild'), db[i].get('net_add'))
+            db[i]['sub_end'] = find_end(db[i], db[i].get('sub_broad'))
+    return db
 
 
 def find_start(db, net_add):
-
     db['sub_start'][3] = net_add[3] + 1
     for b in range(0, 2):
         db['sub_start'][b] = net_add[b]
-    start = db['sub_start']
+    start = db['sub_start'].copy()
     return start
 
 
@@ -89,7 +89,7 @@ def find_end(db, net_broad):
     db['sub_end'][3] = net_broad[3] - 1
     for b in range(0, 2):
         db['sub_end'][b] = net_broad[b]
-    end = db['sub_end']
+    end = db['sub_end'].copy()
     return end
 
 
@@ -193,9 +193,23 @@ def find_wildcard(sub_mask):
 def find_broadcast(wildcard, net_add):
     d = [1, 1, 1, 1]
     for i in range(0, 4):
-        d[i] = wildcard[i] or int(net_add[i])
+        d[i] = wildcard[i] | int(net_add[i])
     return d
 
 
-userdb, labelsdb = input_user()
-vlan(userdb, labelsdb)
+u, l = input_user()
+db = vlsm(u, l)
+
+
+def printer(db, u):
+    # count = 0
+    # for x in db[0]:
+    #     if isinstance(db[0][x], list):
+    #         count += int(len(db[0][x]) / 2)
+
+    # for x in range(0, count):
+    print(*db[0].keys(), sep=',')
+    for i in range(0, u[0]):
+        print(*db[i].values(), sep=',')
+
+printer(db, u)
