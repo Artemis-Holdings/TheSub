@@ -1,3 +1,6 @@
+from tabulate import tabulate
+
+
 # Gather user information to start calculations
 def input_user():
     #### INITIALIZE DATABASES !!!!
@@ -6,11 +9,10 @@ def input_user():
 
     ###### START OF INPUTS !!!!
     # TODO: Create Data Validation
-
     # TODO: Change this block for user interaction.
     # input_network = input('What is the network IP:')
     # input_mask = input('What is the mask (255.255.255.192) or CIDR (/24):')
-    # input_num_of_subnets = input('Number of subnets required:  ')
+    # n_nets = input('Number of subnets required:  ')
 
     ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
     input_network = str('192.168.0.0')
@@ -202,14 +204,13 @@ db = vlsm(u, l)
 
 
 def printer(db, u):
-    # count = 0
-    # for x in db[0]:
-    #     if isinstance(db[0][x], list):
-    #         count += int(len(db[0][x]) / 2)
-
-    # for x in range(0, count):
-    print(*db[0].keys(), sep=',')
+    table = []
     for i in range(0, u[0]):
-        print(*db[i].values(), sep=',')
+        table.append(db[i].values())
+
+    headers = db[0].keys()
+    headers = ['Network Common Name', 'Hosts\nRequired', 'Hosts\nAvailable', 'Hosts\nUnused', 'Net\nAddress', 'CIDR', 'Mask', 'Start', 'End', 'Broadcast', 'Wildcard', 'Delta' ]
+    print(tabulate(table, headers, tablefmt="pipe", stralign='center', numalign='left'))
+
 
 printer(db, u)
