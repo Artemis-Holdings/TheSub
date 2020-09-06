@@ -1,45 +1,71 @@
 from tabulate import tabulate
 
-def pre_process(input_network, input_mask, n_nets):
+
+def validate_ip(ip):
+    ip = ip.split('.')
+    if len(ip) == 4:
+        for i in range(0, 4):
+            if int(ip[i]) >= int(255):
+                print('Error with octett {}'.format(ip[i]))
+                error_code = int(1)
+                return error_code
+            else:
+                error_code = int(69)
+                return error_code
+    else:
+        error_code = int(2)
+        return error_code
+
+
+# Gather user information to start calculations
+def input_user():
+    #### INITIALIZE DATABASES !!!!
+    input_labels_db = {}
     input_user_db = []
 
+    ###### START OF INPUTS !!!!
+    # TODO: Create Data Validation
+    # TODO: Change this block for user interaction.
+
+    # input_network = input('What is the network IP:')
+    # input_mask = input('What is the mask (255.255.255.192) or CIDR (/24):')
+    # n_nets = int(input('Number of subnets required:  '))
+
+    ### TODO: !!!TEST SEQUENCE ONLY!!! REMOVE BEFORE FLIGHT
+    input_network = str('192.168.0.0')
+    input_mask = str('/24')
+    n_nets = int(3)
+    ### VALIDATION
+    if not validate_ip(input_network) == int(69):
+        print('Please enter a valid IP address.')
+        input_user()
+
+    else:
+        print('IP Valid')
+
+    ### PRE-PROCESSING !!!
     net_mask_array = return_mask_normalized(input_mask)
     net_cidr = return_cidr_normalized(input_mask)
+    #### ADDS THE USER INPUT INTO A DICTIONARY !!!
     input_user_db.append(n_nets)
     input_user_db.append([int(i) for i in input_network.split('.')])
     input_user_db.append(net_mask_array)
     input_user_db.append(net_cidr)
 
+    for b in range(0, n_nets):
+        #### TODO: UNCOMMENT TO BRING IN USER INTERACTION
+        name_sub_net = input('Network ' + str(b) + ' Common Name: ')
+        n_hosts = input('Number of hosts required:  ')
+        new_entry = {name_sub_net: n_hosts}
+        input_labels_db.update(new_entry)
+        input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=True)
+        ## TODO:  REMOVE BEFOR FLIGHT. TEST SEQUENCE ONLY!!!
+        # input_labels_db = [('staff', 100), ('sales', 50), ('it', 32), ('guest', 32)]
 
-def init_input():
-    input_network = input('What is the network IP: ')
-    input_mask = input('What is the mask (255.255.255.192) or CIDR (/24): ')
-    try:
-        n_nets = int(input('Number of subnets required: '))
-        pre_process(input_network, input_mask, n_nets)
-    except:
-        print('Number of networks must be an integer.')
-        init_input()
-
-
-
-
-def validate():
-    print('validate')
+    return input_user_db, input_labels_db
 
 
 
-# def loop_input(n_nets):
-#     input_labels_db = {}
-#
-#     for b in range(0, n_nets):
-#         name_sub_net = input('Network ' + str(b) + ' Common Name: ')
-#         n_hosts = input('Number of hosts required:  ')
-#         new_entry = {name_sub_net: n_hosts}
-#         input_labels_db.update(new_entry)
-#         input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=True)
-
-init_input()
 
 def vlsm(input_user_db, input_labels_db):
     og = dict(net_common_name='name', hosts_req=0, hosts_avail=0, hosts_unused=0, net_add=[0, 0, 0, 0], cidr=0,
@@ -198,8 +224,8 @@ def find_broadcast(wildcard, net_add):
     return d
 
 
-# u, l = input_user()
-# db = vlsm(u, l)
+u, l = input_user()
+db = vlsm(u, l)
 
 
 def printer(db, u):
@@ -211,4 +237,4 @@ def printer(db, u):
     print(tabulate(table, headers, tablefmt="pipe", stralign='center', numalign='left'))
 
 
-# printer(db, u)
+printer(db, u)
