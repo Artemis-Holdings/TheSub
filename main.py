@@ -180,10 +180,6 @@ def find_broadcast(wildcard, net_add):
     return d
 
 
-# u, l = input_user()
-# db = vlsm(u, l)
-
-
 def printer(db, u):
     table = []
     for i in range(0, u[0]):
