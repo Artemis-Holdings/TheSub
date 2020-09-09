@@ -1,45 +1,5 @@
 from tabulate import tabulate
 
-def pre_process(input_network, input_mask, n_nets):
-    input_user_db = []
-
-    net_mask_array = return_mask_normalized(input_mask)
-    net_cidr = return_cidr_normalized(input_mask)
-    input_user_db.append(n_nets)
-    input_user_db.append([int(i) for i in input_network.split('.')])
-    input_user_db.append(net_mask_array)
-    input_user_db.append(net_cidr)
-
-
-def init_input():
-    input_network = input('What is the network IP: ')
-    input_mask = input('What is the mask (255.255.255.192) or CIDR (/24): ')
-    try:
-        n_nets = int(input('Number of subnets required: '))
-        pre_process(input_network, input_mask, n_nets)
-    except:
-        print('Number of networks must be an integer.')
-        init_input()
-
-
-
-
-def validate():
-    print('validate')
-
-
-
-# def loop_input(n_nets):
-#     input_labels_db = {}
-#
-#     for b in range(0, n_nets):
-#         name_sub_net = input('Network ' + str(b) + ' Common Name: ')
-#         n_hosts = input('Number of hosts required:  ')
-#         new_entry = {name_sub_net: n_hosts}
-#         input_labels_db.update(new_entry)
-#         input_labels_db = sorted(input_labels_db.items(), key=lambda x: x[1], reverse=True)
-
-init_input()
 
 def vlsm(input_user_db, input_labels_db):
     og = dict(net_common_name='name', hosts_req=0, hosts_avail=0, hosts_unused=0, net_add=[0, 0, 0, 0], cidr=0,
@@ -120,12 +80,34 @@ def return_mask_normalized(input_mask):
 
 
 def return_cidr_normalized(input_cidr):
+    mask = input_cidr.split('.')
     if '/' in input_cidr:
         cidr_given = int(input_cidr.replace('/', ''))
-        return cidr_given
+        if cidr_given <= int(32):
+            return cidr_given
+        else:
+            print('RESTART: CIDR must be less than 32')
+            main()
+    elif int(input_cidr):
+        input_cidrx = int(input_cidr)
+        if input_cidrx <= 32:
+            return input_cidrx
+        else:
+            print('RESTART: CIDR must be less than 32')
+            main()
+
+    elif len(mask) == 4:
+        for i in range(0, 4):
+            maskx = input_cidr[i]
+            if int(maskx) <= int(255):
+                mask_array = [int(i) for i in input_cidr.split('.')]
+                return dec_to_bin(mask_array)
+            else:
+                print('RESTART: Error with mask octett {}'.format(maskx[i]))
+                main()
     else:
-        mask_array = [int(i) for i in input_cidr.split('.')]
-        return dec_to_bin(mask_array)
+        print('RESTART General Error with Subnet Mask')
+        main()
 
 
 def dec_to_bin(mask_array):
@@ -207,8 +189,88 @@ def printer(db, u):
     for i in range(0, u[0]):
         table.append(db[i].values())
     headers = db[0].keys()
-    # headers = ['Network Common Name', 'Hosts\nRequired', 'Hosts\nAvailable', 'Hosts\nUnused', 'Net\nAddress', 'CIDR', 'Mask', 'Start', 'End', 'Broadcast', 'Wildcard', 'Delta' ]
     print(tabulate(table, headers, tablefmt="pipe", stralign='center', numalign='left'))
+
+    main()
 
 
 # printer(db, u)
+def validate_ip(ip):
+    ip = ip.split('.')
+    try:
+        for i in range(0, 4):
+            ipx = ip[i]
+            if ipx.isalpha():
+                print('RESTART: Error with octett {}'.format(ip[i]))
+                print('IP must be integer with "." between octett.')
+                main()
+            elif int(ipx) <= int(255) and not ipx.isalpha():
+                if len(ip) == 4:
+                    pass
+                else:
+                    print('RESTART: IP address too short.')
+
+                    main()
+            else:
+                print('RESTART: Error with octett {}'.format(ip[i]))
+                main()
+    except:
+        print('RESTART: General error with Net IP. Verify entry is correct.')
+        main()
+
+
+def pre_process(input_network, input_mask, n_nets):
+    input_user_db = []
+
+    net_mask_array = return_mask_normalized(input_mask)
+    net_cidr = return_cidr_normalized(input_mask)
+    input_user_db.append(n_nets)
+    input_user_db.append([int(i) for i in input_network.split('.')])
+    input_user_db.append(net_mask_array)
+    input_user_db.append(net_cidr)
+    return input_user_db
+
+
+def init_input():
+    input_network = input('What is the network IP: ')
+    ip_code = validate_ip(input_network)
+    if ip_code is None:
+        pass
+    else:
+        print('RESTART:  ERROR CODE: {}'.format(ip_code))
+        main()
+    return input_network
+
+
+def mask_input(input_net):
+    input_labels_db = []
+
+    input_mask = input('What is the mask (255.255.255.192) or CIDR (/24): ')
+    n_nets = int(input('Number of subnets required: '))
+    input_user_db = pre_process(input_net, input_mask, n_nets)
+    for b in range(0, n_nets):
+
+        name_sub_net = input('Network ' + str(b) + ' Common Name: ')
+        try:
+            n_hosts = int(input('Number of hosts required: '))
+            new_entry = [name_sub_net, n_hosts]
+            input_labels_db.append(new_entry)
+            input_labels_db = sorted(input_labels_db, key=lambda x: x[1], reverse=True)
+        except:
+            print('IGNORING INPUT: Value must be an integer.')
+            pass
+    return input_user_db, input_labels_db
+
+
+def main():
+    try:
+        usr_input_network = init_input()
+        input_user_db, input_labels_db = mask_input(usr_input_network)
+        db = vlsm(input_user_db, input_labels_db)
+        printer(db, input_user_db)
+    except:
+        print('RESTART: Unknown Error')
+        main()
+
+if __name__ == '__main__':
+    main()
