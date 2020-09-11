@@ -1,6 +1,24 @@
 from tabulate import tabulate
 
 
+def main():
+    try:
+        usr_input_network = init_input()
+        input_user_db, input_labels_db = mask_input(usr_input_network)
+        # print(input_user_db)
+        # print(input_labels_db)
+        db = vlsm(input_user_db, input_labels_db)
+        # print(db)
+        try:
+            printer(db, input_user_db)
+            printer_lite(db, input_user_db)
+        except:
+            printer_lite(db, input_user_db)
+    except:
+        print('RESTART: General Error.')
+        main()
+
+
 def vlsm(input_user_db, input_labels_db):
     og = dict(net_common_name='name', hosts_req=0, hosts_avail=0, hosts_unused=0, net_add=[0, 0, 0, 0], cidr=0,
               sub_mask=[0, 0, 0, 0], sub_start=[0, 0, 0, 0], sub_end=[0, 0, 0, 0], sub_broad=[0, 0, 0, 0],
@@ -182,15 +200,34 @@ def find_broadcast(wildcard, net_add):
 
 def printer(db, u):
     table = []
+    print('EASY READ FORMAT')
+    print("==================")
     for i in range(0, u[0]):
         table.append(db[i].values())
     headers = db[0].keys()
     print(tabulate(table, headers, tablefmt="pipe", stralign='center', numalign='left'))
 
+
+
+def printer_lite(db, input_user_db):
+    table = []
+    print('CSV FORMAT\n~~Copy and Paste the following into a .txt then import the file to excel. Deliminator is colon '
+          '(:)~~')
+    print("==================")
+    for header in db[0].keys():
+        print(header, end=':')
+    print('\n')
+    for i in range(0, input_user_db[0]):
+        table.append(db[i].values())
+        x = table[i]
+        y = list(x)
+        for j in range(0, len(y)):
+            d = y[j]
+            print(d, end=':')
+        print('\n')
     main()
 
 
-# printer(db, u)
 def validate_ip(ip):
     ip = ip.split('.')
     try:
@@ -258,15 +295,7 @@ def mask_input(input_net):
     return input_user_db, input_labels_db
 
 
-def main():
-    try:
-        usr_input_network = init_input()
-        input_user_db, input_labels_db = mask_input(usr_input_network)
-        db = vlsm(input_user_db, input_labels_db)
-        printer(db, input_user_db)
-    except:
-        print('RESTART: Unknown Error')
-        main()
+
 
 if __name__ == '__main__':
     main()
