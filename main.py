@@ -6,7 +6,7 @@
 #     \                                                   \
 #   )`.\  )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )
 # -'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `
-# The Sub: Expiditionary VLSM Calculator
+# The Sub: Expeditionary VLSM Calculatorr
 # Documentation at: https://github.com/TheMagicNacho
 # v0.1.0
 # ------------------------------------------------
@@ -221,7 +221,7 @@ def printer(db, u):
 
 def printer_lite(db, input_user_db):
     table = []
-    print('CSV FORMAT\n~~Copy and Paste the following into a .txt then import the file to excel. Deliminator is colon '
+    print('CSV FORMAT\n~~Copy and Paste the following into a .txt then import the file to excel. Delimitator is colon '
           '(:)~~')
     print("==================")
     for header in db[0].keys():
@@ -275,7 +275,7 @@ def pre_process(input_network, input_mask, n_nets):
 
 
 def init_input():
-    input_network = input('What is the network IP: ')
+    input_network = input('What is the network IPv4 address: ')
     ip_code = validate_ip(input_network)
     if ip_code is None:
         pass
