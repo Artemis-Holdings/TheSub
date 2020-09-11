@@ -6,7 +6,7 @@
 #     \                                                   \
 #   )`.\  )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )
 # -'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `
-# The Sub: Expeditionary VLSM Calculatorr
+# The Sub: Expeditionary VLSM Calculator
 # Documentation at: https://github.com/TheMagicNacho
 # v0.1.0
 # ------------------------------------------------
