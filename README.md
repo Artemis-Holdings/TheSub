@@ -13,16 +13,18 @@
 # The Sub: Expeditionary VLSM Calculator
 This application can calculate IPv4 subnets for complex networks in resource constrained runtimes.
 
-Because U.S. Government computers have restrictions on the applications that administrators can install. 
+Network engineers working in denied areas rquire access to a reliable subnet calculator that can operate off-line. Because U.S. Government computers have restrictions on the applications that administrators can install, there are few options which meet these criteria. 
 This software does not require any compiling and does not write to the system allowing for usage on any government computer.
-###### Features
-- Only requires python interpreter 
+#### Features
+- Requires the basic python interpreter (anaconda not required).
 - Made with security in mind.
 - Does not require external modules. Tabulate module is optional.
-- Outputs in CSV format for easy import to Excel.
-- Can calculate up to 40 subnets.
+- Outputs in CSV format for easy import into Excel.
+- Can calculate up to 40 subnets. Posibly higher, but not tested.
+- Works without internet connection.
+- Does not require administrator privlages to run.
 
-###### FAQ
+#### FAQ
 - **Why are the IP addresses outputted with commas and brackets?** _The IP addresses are stored and operated upon in a list format. The format is preserved for output into other applications if needed._
 - **Why python and not java or C?** _Most government computers have python installed and can run simple scripts, but cannot support additional moduals. The Sub does not have any external dependencies other than the "Tabulate" module._
 - **What happens if I don't copy or want to use Tabulate?** _The Sub will still work without tabulate. But you will need to import the output into Excel to view the output in a human readable format._
