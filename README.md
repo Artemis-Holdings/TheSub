@@ -29,10 +29,9 @@ This software does not require any compiling and does not write to the system al
 -** What is CSV? **_Comma Seperated Values (CSV) is a file format for storing spreadsheet data. CSV files are saved in a text file and opend in spreadsheet software._
 
 ## How to Install
-0) Create a directory to save the calculator and required modules. If possible, you can fork or clone this repo. But this instruction set assumes that git is not available.
-1) Copy the the main file into a text document on your local machine. Save the file as a ```.py``` extension.
-2) Optional: Save the tabulate file in the same directory.
-2.5) If you do not copy the tabulate module, The Sub will only output a CSV format.
+0) Create a directory to save the calculator and required modules. If possible, you can fork or clone this repo. But this instruction set assumes that git is not available on your machine.
+1) Copy and paste the the **main.py** file into a text document on your local machine. Save the file as a ```.py``` extension.
+2) Optional: Copy and paste the **tabulate.py** file in the same directory. If you do not copy the tabulate module, The Sub will only output a CSV format.
 3) In powershell or CMD Prompt, navigate to the directory with the file.
 4) Enter the following command:
 ```py main.py```
