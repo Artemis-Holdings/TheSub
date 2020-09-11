@@ -38,6 +38,7 @@ This software does not require any compiling and does not write to the system al
 3) Enter the desired amount of subnets. The Sub is tested up to 40 subnets, but can probably go higher.
 4) Enter the common name for your network. Any easy to remember Alpha Numeric string is acceptable.
 5) Enter the number of hosts required for the network. Include network devices (switches, firewalls). DO NOT Include broadcast or network address, the calculator will account for those addresses.
+![Screencap of CLI for The Sub](https://github.com/TheMagicNacho/subnet/blob/master/archive/img/screencap.PNG)
 
 ## Excel Integration
 1) Highlight and copy the CSV output.
@@ -49,4 +50,9 @@ This software does not require any compiling and does not write to the system al
 7) Select your file, click import on the bottom right of the window.
 8) On the top drop down "delimiter", choose colon.
 9) Click import. 
+![Import Tabs on Excel](https://github.com/TheMagicNacho/subnet/blob/master/archive/img/excel_screencap.PNG)
+_Location of Data tab and CSV import button._
+![Excel Import settings](https://github.com/TheMagicNacho/subnet/blob/master/archive/img/import.PNG)
+_Required import settings for CSV in Excel._
+
 
