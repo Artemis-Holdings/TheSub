@@ -1,3 +1,15 @@
+#                            |`-:_
+#   ,----....____            |    `+.
+#  (             ````----....|___   |
+#   \     _                      ````----....____
+#    \    _)                                     ```---.._
+#     \                                                   \
+#   )`.\  )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )`.   )
+# -'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `
+# The Sub: Expiditionary VLSM Calculator
+# Documentation at: https://github.com/TheMagicNacho
+# v0.1.0
+# ------------------------------------------------
 from tabulate import tabulate
 
 
@@ -5,14 +17,12 @@ def main():
     try:
         usr_input_network = init_input()
         input_user_db, input_labels_db = mask_input(usr_input_network)
-        # print(input_user_db)
-        # print(input_labels_db)
         db = vlsm(input_user_db, input_labels_db)
-        # print(db)
         try:
             printer(db, input_user_db)
             printer_lite(db, input_user_db)
         except:
+            print('!!!Tabulate module missing. Use CSV!!!')
             printer_lite(db, input_user_db)
     except:
         print('RESTART: General Error.')
