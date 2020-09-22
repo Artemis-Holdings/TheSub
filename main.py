@@ -8,7 +8,8 @@
 # -'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `
 # The Sub: Expeditionary VLSM Calculator
 # Documentation at: https://github.com/TheMagicNacho
-# v0.1.0
+# v0.1.1
+#TODO: Add Max available subnet validator
 # ------------------------------------------------
 from tabulate import tabulate
 
@@ -39,7 +40,6 @@ def vlsm(input_user_db, input_labels_db):
         db[i] = og.copy()
         db[i]['net_common_name'] = input_labels_db[i][0]
         db[i]['hosts_req'] = input_labels_db[i][1]
-
         if i == 0:
             db[0]['net_add'] = input_user_db[1].copy()
             db[0]['cidr'] = int(find_slash(db[0].get('hosts_req')))
@@ -51,6 +51,7 @@ def vlsm(input_user_db, input_labels_db):
             db[0]['sub_wild'] = find_wildcard(db[0].get('sub_mask'))
             db[0]['sub_broad'] = find_broadcast(db[0].get('sub_wild'), db[0].get('net_add'))
             db[0]['sub_end'] = find_end(db[0], db[0].get('sub_broad'))
+
 
         else:
             db[i]['net_add'] = find_start(db[i], db[i - 1].get('sub_broad'))
@@ -85,7 +86,7 @@ def find_end(db, net_broad):
 def find_slash(sn_hosts):
     for i in range(0, sn_hosts):
         x = 2 ** i
-        if x > sn_hosts + 2:
+        if x > sn_hosts: #default + 2
             return 32 - i
         else:
             continue
