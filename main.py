@@ -8,7 +8,7 @@
 # -'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `-'   `
 # The Sub: Expeditionary VLSM Calculator
 # Documentation at: https://github.com/TheMagicNacho
-# v0.1.1
+# v0.1.3
 # TODO: Add Max available subnet validator
 # ------------------------------------------------
 from tabulate import tabulate
@@ -23,7 +23,7 @@ def main():  # Main function loops through user input, calculations, and input v
             printer(db, input_user_db)
             printer_lite(db, input_user_db)
         except:  # Prints only CSV because tabulate module is missing.
-            print('!!!Tabulate module missing. Use CSV!!!')
+            print('!!!TABULATE MODULE MISSING. USE CSV!!!')
             printer_lite(db, input_user_db)
     except:  # Restarts in the event of impassable error.
         print('RESTART: General Error.')
@@ -255,8 +255,7 @@ def find_broadcast(wildcard, net_add):
 
 def printer(db, u):  # Pretty print the the information.
     table = []
-    print('EASY READ FORMAT')
-    print("==================")  # I thought about using code to write the divider, but decided that was a waste of lines.
+    print('\n')
     for i in range(0, u[0]):
         table.append(db[i].values())
     headers = db[0].keys()
@@ -265,9 +264,10 @@ def printer(db, u):  # Pretty print the the information.
 
 def printer_lite(db, input_user_db):  # Create the CSV format of information.
     table = []
-    print('CSV FORMAT\n~~Copy and Paste the following into a .txt then import the file to excel. Delimitator is colon '
-          '(:)~~')
-    print("==================")
+    print('\nCSV FORMAT\n***Copy and Paste the following into a .txt then import the file to excel. Delimitator is colon ":" ***')
+    for i in range(0, 60):
+        print("=", end='=')
+    print('\n')
     for header in db[0].keys():
         print(header, end=':')
     print('\n')
