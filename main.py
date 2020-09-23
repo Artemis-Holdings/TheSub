@@ -339,11 +339,14 @@ def mask_input(input_net):  # Recieve user input for mask & Network data. Valida
         name_sub_net = input('Network ' + str(b) + ' Common Name: ')
         try:
             n_hosts = int(input('Number of hosts required: '))
+            if n_hosts <= int(4):  # Math doesn't work for int less than 4 / Must account for net_add, sub_broad, and a minimum of two hosts within network.
+                print('INPUT UPDATE:  Minimum host is 4. Must account for net_add, sub_broad, and a minimum of two hosts within network.')
+                n_hosts = int(4)
             new_entry = [name_sub_net, n_hosts]
             input_labels_db.append(new_entry)
             input_labels_db = sorted(input_labels_db, key=lambda x: x[1], reverse=True)
         except:
-            print('IGNORING INPUT: Value must be an integer.')  # Data validation is go/no-go for integer
+            print('INPUT IGNORE: Value must be an integer.')  # Data validation is go/no-go for integer
             pass
     return input_user_db, input_labels_db
 
