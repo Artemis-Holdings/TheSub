@@ -347,6 +347,11 @@ def mask_input(input_net):  # Recieve user input for mask & Network data. Valida
             input_labels_db = sorted(input_labels_db, key=lambda x: x[1], reverse=True)
         except:
             print('INPUT IGNORE: Value must be an integer.')  # Data validation is go/no-go for integer
+            name_sub_net = str('IGNORED SUBNET')
+            n_hosts = int(4)
+            new_entry = [name_sub_net, n_hosts]
+            input_labels_db.append(new_entry)
+            input_labels_db = sorted(input_labels_db, key=lambda x: x[1], reverse=True)
             pass
     return input_user_db, input_labels_db
 
