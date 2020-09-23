@@ -44,7 +44,7 @@ This software does not require any compiling and does not write to the system al
 3) Enter the desired amount of subnets. The Sub is tested up to 40 subnets, but can probably go higher.
 4) Enter the common name for your network. Any easy to remember Alpha Numeric string is acceptable.
 5) Enter the number of hosts required for the network. Include network devices (switches, firewalls). DO NOT Include broadcast or network address, the calculator will account for those addresses.
-![Screencap of CLI for The Sub](https://github.com/TheMagicNacho/subnet/blob/master/archive/img/screencap_v2.PNG)
+![Screencap of CLI for The Sub](https://github.com/TheMagicNacho/subnet/blob/master/archive/img/screencap_v2.png)
 
 ## 3 - Excel Integration
 1) Highlight and copy the CSV output.
