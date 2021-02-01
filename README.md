@@ -15,8 +15,22 @@ This application can calculate IPv4 subnets for complex networks in resource con
 
 Network engineers working in denied areas rquire access to a reliable subnet calculator that can operate off-line. Because U.S. Government computers have restrictions on the applications that administrators can install, there are few options which meet these criteria. 
 This software does not require any compiling and does not write to the system allowing for usage on any government computer.
-#### Features
+## UPDATE
+New powershell script available.
+
+#### Powershell Features
+- Can run in any windows environment natively.
+- Simplified math allows for small program file ~12kb
+- Made with security in mind.
+- Does not require external modules.
+- Outputs in CSV format for easy import into Excel.
+- Can calculate up to 40 subnets. Posibly higher, but not tested.
+- Works without internet connection.
+- Does not require administrator privlages to run.
+
+#### Python Features
 - Requires the basic python interpreter (anaconda not required).
+- Simplified math allows for small program file ~14kb
 - Made with security in mind.
 - Does not require external modules. Tabulate module is optional.
 - Outputs in CSV format for easy import into Excel.
